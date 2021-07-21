@@ -12,7 +12,12 @@ import { useDebounce } from "../../hooks/useDebouce";
 import { useServerCtxValue } from "../../state/server.state";
 import { useTranslate } from "react-polyglot";
 import { TextField } from "../misc/TextField";
-import {PlayerDataSort, usePlayerDataContext} from "../../provider/PlayerDataProvider";
+import { PlayerDataSort } from "../../provider/PlayerDataProvider";
+import {
+  usePlayersSortTypeState,
+  useRawPlayersValue,
+  useSetSearchPlayers,
+} from "../../state/players.state";
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -32,12 +37,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const PlayerPageHeader: React.FC = () => {
   const classes = useStyles();
-  const {
-    playerSortType: sortType,
-    setPlayerSortType: setSortType,
-    setPlayerFilterInput: setPlayerFilter,
-    playerData: allPlayers,
-  } = usePlayerDataContext()
+
+  const setSearchStateRecoil = useSetSearchPlayers();
+  const [playersSortType, setPlayersSortType] = usePlayersSortTypeState();
+  const allPlayers = useRawPlayersValue();
+
   const [searchVal, setSearchVal] = useState("");
   const serverCtx = useServerCtxValue();
   const t = useTranslate();
@@ -46,7 +50,7 @@ export const PlayerPageHeader: React.FC = () => {
 
   // We might need to debounce this in the future
   const handleSortData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSortType(e.target.value as PlayerDataSort);
+    setPlayersSortType(e.target.value as PlayerDataSort);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,8 +58,8 @@ export const PlayerPageHeader: React.FC = () => {
   };
 
   useEffect(() => {
-    setPlayerFilter(debouncedInput as string);
-  }, [debouncedInput, setPlayerFilter]);
+    setSearchStateRecoil(debouncedInput as string);
+  }, [debouncedInput]);
 
   return (
     <Box display="flex" justifyContent="space-between">
@@ -64,8 +68,13 @@ export const PlayerPageHeader: React.FC = () => {
           {t("nui_menu.page_players.misc.online_players")}
         </Typography>
         <Typography className={classes.playerCount}>
-          {`${allPlayers.length}/${serverCtx.maxClients} ${t('nui_menu.page_players.misc.players')} - ${
-            serverCtx.oneSync.status ? `OneSync (${serverCtx.oneSync.type})` : `OneSync Off`}`}
+          {`${allPlayers.length}/${serverCtx.maxClients} ${t(
+            "nui_menu.page_players.misc.players"
+          )} - ${
+            serverCtx.oneSync.status
+              ? `OneSync (${serverCtx.oneSync.type})`
+              : `OneSync Off`
+          }`}
         </Typography>
       </Box>
       <Box display="flex" alignItems="center" justifyContent="center">
@@ -88,7 +97,7 @@ export const PlayerPageHeader: React.FC = () => {
           select
           className={classes.inputs}
           onChange={handleSortData}
-          value={sortType}
+          value={playersSortType}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start" className={classes.icon}>

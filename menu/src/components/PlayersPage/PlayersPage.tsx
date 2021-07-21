@@ -3,7 +3,7 @@ import { Box, makeStyles, Theme } from "@material-ui/core";
 import { PlayerPageHeader } from "./PlayerPageHeader";
 import { PlayersListEmpty } from "./PlayersListEmpty";
 import { PlayersListGrid } from "./PlayersListGrid";
-import {usePlayerDataContext} from "../../provider/PlayerDataProvider";
+import { useFilteredPlayersValue } from "../../state/players.state";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const PlayersPage: React.FC<{ visible: boolean }> = ({ visible }) => {
   const classes = useStyles();
-  const {sortedAndFilteredPlayerData: players} = usePlayerDataContext()
+  const players = useFilteredPlayersValue();
 
   return (
     <Box

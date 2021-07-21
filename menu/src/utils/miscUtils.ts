@@ -39,4 +39,9 @@ export const translateAlertType = (
 /**
  * Returns whether we are in browser or in NUI
  **/
-export const isBrowserEnv = (): boolean => !(window as any).invokeNative
+export const isBrowserEnv = (): boolean => !(window as any).invokeNative;
+
+/**
+ * Returns an identifier without the prefix
+ * */
+export const parseIdentifier = (ident: string) => ident.split(":")[1];

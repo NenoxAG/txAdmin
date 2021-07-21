@@ -15,6 +15,7 @@ import { IFrameProvider } from "./provider/IFrameProvider";
 import { useCheckCredentials } from "./hooks/useCheckCredentials";
 import { PlayerModalProvider } from "./provider/PlayerModalProvider";
 import { txAdminMenuPage, useSetPage } from "./state/page.state";
+import { usePlayerDataInterval } from "./hooks/usePlayerDataInterval";
 
 debugData([
   {
@@ -31,6 +32,8 @@ const MenuWrapper: React.FC = () => {
   useExitListener();
   useNuiListenerService();
   useCheckCredentials();
+  // We mount the player
+  usePlayerDataInterval();
 
   //Change page back to Main when closed
   useEffect(() => {

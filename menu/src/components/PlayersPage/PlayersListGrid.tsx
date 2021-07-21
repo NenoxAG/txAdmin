@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PlayerCard from "./PlayerCard";
 import { Box, CircularProgress, makeStyles } from "@material-ui/core";
-import {usePlayerDataContext} from "../../provider/PlayerDataProvider";
+import { useFilteredPlayersValue } from "../../state/players.state";
 
 const MAX_PER_BUCKET = 40;
 const FAKE_LOAD_TIME = 1000;
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 export const PlayersListGrid: React.FC = () => {
   const classes = useStyles();
-  const {sortedAndFilteredPlayerData: filteredPlayers} = usePlayerDataContext()
+  const filteredPlayers = useFilteredPlayersValue();
   const [bucket, setBucket] = useState(1);
   const [fakeLoading, setFakeLoading] = useState(false);
   const containerRef = useRef(null);

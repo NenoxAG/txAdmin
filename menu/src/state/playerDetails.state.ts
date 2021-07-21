@@ -8,7 +8,7 @@ import {
 import { fetchWebPipe } from "../utils/fetchWebPipe";
 import { debugLog } from "../utils/debugLog";
 import { MockedPlayerDetails } from "../utils/constants";
-import {PlayerData} from "../provider/PlayerDataProvider";
+import { PlayerData } from "../provider/PlayerDataProvider";
 
 interface PlayerHistoryItem {
   id: string;
@@ -58,12 +58,12 @@ const playerDetails = {
       const assocPlayerLicense = assocPlayer.license;
 
       try {
-        const res =  await fetchWebPipe<TxAdminPlayerAPIResp>(
+        const res = await fetchWebPipe<TxAdminPlayerAPIResp>(
           `/player/${assocPlayerLicense}`
         );
 
-        debugLog('FetchWebPipe', res, 'PlayerFetch')
-        return res
+        debugLog("FetchWebPipe", res, "PlayerFetch");
+        return res;
       } catch (e) {
         if (!process.env.IN_GAME) {
           debugLog(
