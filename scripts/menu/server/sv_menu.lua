@@ -507,9 +507,60 @@ RegisterNetEvent('txAdmin:menu:fixVehicle', function()
   end
 end)
 
+--- @param radius {number} The radius to clear server side objects within
+--- @param src {number} The source of the player triggering the event
+local function clearAreaWithinRadius(radius, src)
+  local playerCoords = GetEntityCoords(src)
+  local vehicleClearPromise = promise.new()
+  local objectsClearPromise = promise.new()
+  local pedsClearPromise = promise.new()
+
+  local vehicles = GetAllVehicles()
+  local objects = GetAllObjects()
+  local peds = GetAllPeds()
+
+  -- Vehicles thread
+  CreateThread(function()
+    for _, veh in ipairs(vehicles) do
+      Wait(0)
+      local vehicleCoords = GetEntityCoords(veh)
+      if #(playerCoords - vehicleCoords) <= radius then
+        DeleteEntity(veh)
+      end
+    end
+
+    vehicleClearPromise:resolve()
+  end)
+
+  -- Objects thread
+  CreateThread(function()
+    for _, obj in ipairs(objects) do
+      Wait(0)
+      local objectCoords = GetEntityCoords(obj)
+      if #(playerCoords - objectCoords) <= radius then
+        DeleteEntity(obj)
+      end
+    end
+    objectsClearPromise:resolve()
+  end)
+
+  -- Peds thread
+  -- Should we even delete peds?
+  CreateThread(function()
+    for _, val in ipairs(peds) do
+      Wait(0)
+
+    end
+    pedsClearPromise:resolve()
+  end)
+
+  return promise.all(vehicleClearPromise, objectsClearPromise, pedsClearPromise)
+end
+
 RegisterNetEvent('txAdmin:menu:clearArea', function(radius)
   local src = source
   local allow = PlayerHasTxPermission(src, 'menu.clear_area')
+  TriggerEvent("txaLogger:menuEvent", src, "spawnVehicle", allow, radius)
   if allow then
     TriggerClientEvent('txAdmin:menu:clearArea', src, radius)
   end
