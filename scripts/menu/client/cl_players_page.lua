@@ -1,15 +1,24 @@
 -- =============================================
 --  This file contains players page functionality
 -- =============================================
+local isDebuggingStateUpdates
 
 if (GetConvar('txEnableMenuBeta', 'false') ~= 'true') then
     return
 end
 
+RegisterCommand('txadmin-menu:debug:stateUpdates', function()
+    isDebuggingStateUpdates = true
+end)
+
 --[[ Player list sync ]]
 local posCache = {}
 local vehCache = {}
 RegisterNetEvent('txAdmin:menu:setPlayerState', function(data)
+    debugPrint('Received server side player state update')
+    if isDebuggingStateUpdates then
+        debugPrint(json.encode(data))
+    end
     -- print(json.encode(data))
     local NetToVeh = NetToVeh
     local GetVehicleClass = GetVehicleClass
